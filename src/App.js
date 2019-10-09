@@ -1,13 +1,29 @@
 import React from 'react';
 import './App.css';
-import Signup from "./containers/Signup/Signup";
+import {
+    BrowserRouter as Router,
+    Route,
+    Link,
+} from 'react-router-dom';
+import Login from '../src/components/auth/login/Login';
+import Signup from "./components/auth/signup/Signup";
 
 function App() {
-  return (
-    <div className="App">
+    return (
+        <Router>
+            <div className="App">
+              <ul>
+                <li><Link to='/'>Home</Link></li>
+                <li><Link to='/about'>Login</Link></li>
+                <li><Link to='/topics'>Signup</Link></li>
+              </ul>
 
-    </div>
-  );
+              <Route path='/' component={App} />
+              <Route path='/login' component={Login} />
+              <Route path='/signup' component={Signup} />
+            </div>
+        </Router>
+    );
 }
 
 export default App;

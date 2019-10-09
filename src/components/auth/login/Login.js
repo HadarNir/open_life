@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 // component for the login page
-class Signup extends Component {
+class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -10,10 +10,10 @@ class Signup extends Component {
     render() {
         return (
             <div className="login">
-                <h1> sign up page</h1>
+                <h1> Login page</h1>
             </div>
         )
     }
 }
 
-export default Signup;
+export default Login;

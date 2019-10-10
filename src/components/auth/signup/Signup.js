@@ -22,7 +22,7 @@ class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            date: new Date()
+            date: new Date(),
         }
     }
 
@@ -34,7 +34,7 @@ class Signup extends Component {
 
     FormExample = () => {
         return (
-            <Formik validationSchema={schema} onSubmit={console.log}>
+            <Formik validationSchema={schema} onSubmit={console.log} initialValues={{}}>
                 {({
                       handleSubmit,
                       handleChange,
@@ -43,7 +43,7 @@ class Signup extends Component {
                   }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Row>
-                            <Form.Group controlId="formBasicFirstName">
+                            <Form.Group controlId="formFirstName">
                                 <Form.Label>First name</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -57,7 +57,7 @@ class Signup extends Component {
                                     first name is a required field
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            <Form.Group controlId="formBasicLastName">
+                            <Form.Group controlId="formLastName">
                                 <Form.Label>Last name</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -73,7 +73,7 @@ class Signup extends Component {
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
-                            <Form.Group controlId="formBasicEmail">
+                            <Form.Group controlId="formEmail">
                                 <Form.Label>Email address</Form.Label>
                                 <Form.Control
                                     type="email"
@@ -92,7 +92,7 @@ class Signup extends Component {
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
-                            <Form.Group controlId="formBasicPassword">
+                            <Form.Group controlId="formPassword">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control
                                     type="password"
@@ -108,7 +108,7 @@ class Signup extends Component {
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
-                            <Form.Group controlId="formBasicPasswordConfirm">
+                            <Form.Group controlId="formPasswordConfirm">
                                 <Form.Label>Confirm your password</Form.Label>
                                 <Form.Control
                                     type="password"
@@ -134,19 +134,20 @@ class Signup extends Component {
                                     type="radio"
                                     label="male"
                                     name="gender"
-                                    id="formBasicGenderMale"
-                                    />
+                                    id="formGenderMale"
+                                    defaultChecked
+                                />
                                 <Form.Check
                                     type="radio"
                                     label="female"
                                     name="gender"
-                                    id="formBasicGenderFemale"
+                                    id="formGenderFemale"
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="other"
                                     name="gender"
-                                    id="formBasicGenderOther"
+                                    id="formGenderOther"
                                 />
                             </Form.Group>
                         </Form.Row>
@@ -159,7 +160,7 @@ class Signup extends Component {
                                     onChange={handleChange}
                                     isInvalid={!!errors.terms}
                                     feedback={errors.terms}
-                                    id="formBasicCheck"
+                                    id="formCheck"
                                 />
                             </Form.Group>
                         </Form.Row>

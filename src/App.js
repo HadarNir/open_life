@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import Login from './components/auth/login/Login';
 import Signup from "./components/auth/signup/Signup";
+// import {app} from "../src/config/firebaseConfig";
 
 function App() {
     return (

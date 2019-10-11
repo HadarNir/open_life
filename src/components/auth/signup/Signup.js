@@ -5,6 +5,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup'; // for everything
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "../auth.css";
 
 let schema;
 schema = yup.object({
@@ -30,6 +31,11 @@ class Signup extends Component {
         this.setState({
             date: date
         });
+    };
+
+    handleSubmit(event) {
+        alert('A name was submitted: ' + this.state.value);
+        event.preventDefault();
     };
 
     FormExample = () => {

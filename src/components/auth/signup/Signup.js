@@ -6,7 +6,7 @@ import * as yup from 'yup'; // for everything
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../auth.css";
-// import {app} from "../../../config/firebaseConfig";
+import {app} from "../../../config/firebaseConfig";
 
 let schema;
 schema = yup.object({
@@ -37,11 +37,24 @@ class Signup extends Component {
 
     handleChange = event => {
         this.setState({[event.target.name]: event.target.value});
-        console.log(this.state);
     };
 
     handleSubmit = (e) => {
-        console.log(this.state);
+        e.preventDefault();
+        app.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((obj) => {
+            app.firestore().collection('/profile').add({
+                uid: obj.user.uid,
+                email: this.state.email,
+                password: this.state.password,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                birthDate: this.state.birthDate,
+                gender: this.state.gender,
+            }).then(r => console.log("success"))
+        }).catch((error) => {
+            alert(error.message)
+        });
+        console.log("submitted")
     };
 
     setBirthDate = date => {

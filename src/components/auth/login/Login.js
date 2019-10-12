@@ -3,7 +3,7 @@ import {Form, Button} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import DatePicker from "react-datepicker"; // for everything
+import "../auth.css";
 
 let schema;
 schema = yup.object({
@@ -18,7 +18,7 @@ class Login extends Component {
         this.state = {}
     }
 
-    FormExample = () => {
+    LoginForm = () => {
         return (
             <Formik validationSchema={schema} onSubmit={console.log} initialValues={{}}>
                 {({
@@ -82,7 +82,7 @@ class Login extends Component {
     render() {
         return (
             <div className="login">
-                {this.FormExample()}
+                {this.LoginForm()}
             </div>
         )
     }

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "firebase": "^7.2.0",
     "formik": "^1.5.8",
     "react": "^16.10.1",
     "react-bootstrap": "^1.0.0-beta.14",
@@ -37,5 +38,17 @@
   },
   "devDependencies": {
     "react-router-dom": "^5.1.2"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HadarNir/open_life.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HadarNir/open_life/issues"
+  },
+  "homepage": "https://github.com/HadarNir/open_life#readme"
 }

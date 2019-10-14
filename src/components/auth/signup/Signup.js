@@ -14,9 +14,10 @@ schema = yup.object({
     lastName: yup.string().required(),
     email: yup.string().email().required(),
     password: yup.string().required(),
-    passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
-    gender: yup.bool().required(),
-    terms: yup.bool().required(),
+    passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required("password confirm is a required field"),
+    gender: yup.string().required(),
+    date: yup.string().required(),
+    terms: yup.bool().oneOf([true], 'Must Accept Terms and Conditions').required(),
 });
 
 
@@ -24,59 +25,56 @@ schema = yup.object({
 class Signup extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            email: '',
-            password: '',
-            firstName: '',
-            lastName: '',
-            birthDate: '',
-            gender: 'male',
-            date: new Date(),
-        };
+        this.state = {};
     }
 
-    handleChange = event => {
-        this.setState({[event.target.name]: event.target.value});
-    };
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        app.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((obj) => {
-            app.firestore().collection('/profile').add({
-                uid: obj.user.uid,
-                email: this.state.email,
-                password: this.state.password,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                birthDate: this.state.birthDate,
-                gender: this.state.gender,
-            }).then(r => console.log("success"))
-        }).catch((error) => {
-            alert(error.message)
-        });
-        console.log("submitted")
-    };
-
-    setBirthDate = date => {
-        this.setState({date: date});
+    getBirthDate = date => {
         date = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
-        this.setState({birthDate: date});
+        return date;
     };
 
-    setGender = gender => {
-        this.setState({gender: gender.currentTarget.value});
-    };
-
-    FormExample = () => {
+    SignupForm = () => {
         return (
-            <Formik validationSchema={schema} onSubmit={console.log} initialValues={{}}>
+            <Formik validationSchema={schema}
+                    onSubmit={
+                        values => {
+                            values.birthDate = this.getBirthDate(values.date);
+                            console.log(values);
+                            app.auth().createUserWithEmailAndPassword(values.email, values.password).then((obj) => {
+                                app.firestore().collection('/profile').add({
+                                    uid: obj.user.uid,
+                                    email: values.email,
+                                    password: values.password,
+                                    firstName: values.firstName,
+                                    lastName: values.lastName,
+                                    birthDate: values.birthDate,
+                                    gender: values.gender,
+                                }).then(r => console.log("success"))
+                            }).catch((error) => {
+                                alert(error.message)
+                            });
+                            console.log("submitted")
+                        }
+                    }
+                    initialValues={{
+                        email: '',
+                        password: '',
+                        passwordConfirm: '',
+                        firstName: '',
+                        lastName: '',
+                        birthDate: '',
+                        gender: 'male',
+                        date: new Date(),
+                    }}>
                 {({
                       handleSubmit,
                       handleChange,
                       values,
                       errors,
+                      setFieldValue,
+                      touched
                   }) => (
-                    <Form noValidate onSubmit={this.handleSubmit}>
+                    <Form noValidate onSubmit={handleSubmit}>
                         <Form.Row>
                             <Form.Group controlId="formFirstName">
                                 <Form.Label>First name</Form.Label>
@@ -85,8 +83,8 @@ class Signup extends Component {
                                     placeholder="Enter first name"
                                     name="firstName"
                                     value={values.firstName}
-                                    onChange={this.handleChange}
-                                    isInvalid={!!errors.firstName}
+                                    onChange={handleChange}
+                                    isInvalid={touched.firstName && errors.firstName}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     first name is a required field
@@ -99,8 +97,8 @@ class Signup extends Component {
                                     placeholder="Enter last name"
                                     name="lastName"
                                     value={values.lastName}
-                                    onChange={this.handleChange}
-                                    isInvalid={!!errors.lastName}
+                                    onChange={handleChange}
+                                    isInvalid={touched.lastName && errors.lastName}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     last name is a required field
@@ -115,8 +113,8 @@ class Signup extends Component {
                                     placeholder="Enter email"
                                     name="email"
                                     value={values.email}
-                                    onChange={this.handleChange}
-                                    isInvalid={!!errors.email}
+                                    onChange={handleChange}
+                                    isInvalid={touched.email && errors.email}
                                 />
                                 <Form.Text className="text-muted">
                                     We'll never share your email with anyone else.
@@ -134,8 +132,8 @@ class Signup extends Component {
                                     placeholder="Enter password"
                                     name="password"
                                     value={values.password}
-                                    onChange={this.handleChange}
-                                    isInvalid={!!errors.password}
+                                    onChange={handleChange}
+                                    isInvalid={touched.password && errors.password}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {errors.password}
@@ -144,14 +142,14 @@ class Signup extends Component {
                         </Form.Row>
                         <Form.Row>
                             <Form.Group controlId="formPasswordConfirm">
-                                <Form.Label>Confirm your password</Form.Label>
+                                <Form.Label>Password confirm</Form.Label>
                                 <Form.Control
                                     type="password"
-                                    placeholder="Enter password"
+                                    placeholder="Enter password confirm"
                                     name="passwordConfirm"
                                     value={values.passwordConfirm}
-                                    onChange={this.handleChange}
-                                    isInvalid={!!errors.passwordConfirm}
+                                    onChange={handleChange}
+                                    isInvalid={touched.passwordConfirm && errors.passwordConfirm}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {errors.passwordConfirm}
@@ -159,8 +157,9 @@ class Signup extends Component {
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
-                            <Form.Label>Enter your Birthday </Form.Label>
-                            <DatePicker selected={this.state.date} onChange={this.setBirthDate} name="birthDate"/>
+                            <Form.Label>Enter your Birthday</Form.Label>
+                            <DatePicker selected= {values.date} value={values.date} onChange={e => setFieldValue('date', e)} isInvalid={touched.date && errors.date}
+                                        feedback={errors.date} name="date"/>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group>
@@ -171,7 +170,7 @@ class Signup extends Component {
                                     name="gender"
                                     id="formGenderMale"
                                     value="male"
-                                    onChange={this.setGender}
+                                    onChange={handleChange}
                                     defaultChecked
                                 />
                                 <Form.Check
@@ -180,7 +179,7 @@ class Signup extends Component {
                                     name="gender"
                                     id="formGenderFemale"
                                     value="female"
-                                    onChange={this.setGender}
+                                    onChange={handleChange}
                                 />
                                 <Form.Check
                                     type="radio"
@@ -188,7 +187,7 @@ class Signup extends Component {
                                     name="gender"
                                     id="formGenderOther"
                                     value="other"
-                                    onChange={this.setGender}
+                                    onChange={handleChange}
                                 />
                             </Form.Group>
                         </Form.Row>
@@ -199,7 +198,7 @@ class Signup extends Component {
                                     name="terms"
                                     label="Agree to terms and conditions"
                                     onChange={handleChange}
-                                    isInvalid={!!errors.terms}
+                                    isInvalid={touched.terms && errors.terms}
                                     feedback={errors.terms}
                                     id="formCheck"
                                 />
@@ -217,7 +216,7 @@ class Signup extends Component {
     render() {
         return (
             <div className="signup">
-                {this.FormExample()}
+                {this.SignupForm()}
             </div>
         )
     }
